@@ -107,6 +107,12 @@ export default {
               component: './OverView',
             },
             {
+              path: '/globalParam',
+              name: 'globalParam',
+              icon: 'smile',
+              component: './GlobalParam',
+            },
+            {
               path: '/admin',
               name: 'admin',
               icon: 'crown',
@@ -115,7 +121,7 @@ export default {
             },
             {
               path: '/serviceDetail/:page',
-              hideInMenu:true,
+              hideInMenu: true,
               name: 'serviceDetail',
               component: './ServiceDetail',
             },

@@ -1,5 +1,6 @@
 export default {
   'menu.overview': '概览',
+  'menu.globalParam': '全局参数',
   'menu.serviceDetail': '服务详情',
   'menu.more-blocks': '更多区块',
   'menu.home': '首页',

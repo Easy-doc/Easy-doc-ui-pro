@@ -1,20 +1,21 @@
 /* eslint-disable react/no-array-index-key */
-import React from 'react'
-import { Tabs, Card } from 'antd'
-import { ServiceState } from '../../models/service'
-import ServiceItem from '../ServiceItem'
-import s from './index.less'
+import React from 'react';
+import { Tabs, Card } from 'antd';
+import { ServiceState } from '../../models/service';
+import ServiceItem from '../ServiceItem';
+import ModelItem from '../ModelItem';
+import s from './index.less';
 
-const { TabPane } = Tabs
+const { TabPane } = Tabs;
 
 interface ServiceTabProps {
-  serviceData: ServiceState,
+  serviceData: ServiceState;
 }
 
 const ServiceTab: React.FC<ServiceTabProps> = props => {
-  const callback = () => {}
+  const callback = () => {};
 
-  const { modelList, controllerList } = props.serviceData
+  const { modelList, controllerList } = props.serviceData;
 
   return (
     <Card className={s.card}>
@@ -22,23 +23,18 @@ const ServiceTab: React.FC<ServiceTabProps> = props => {
         <TabPane tab="接口列表" key="serviceList">
           {controllerList &&
             controllerList.map((service: any, idx: any) => (
-              <ServiceItem
-                detailData={service}
-                key={`service-${idx}`}
-              />
+              <ServiceItem detailData={service} key={`service-${idx}`} />
             ))}
         </TabPane>
-       <TabPane tab="对象列表" key="modelList">
-          {/* {controllerList &&
-            controllerList.map((control, idx) =>
-              <SeviceItem
-                service={control}
-                key={`control-${idx}`}
-              />)} */}
+        <TabPane tab="对象列表" key="modelList">
+          {modelList &&
+            modelList.map((model: any, idx: any) => (
+              <ModelItem detailData={model} key={`control-${idx}`} />
+            ))}
         </TabPane>
       </Tabs>
     </Card>
-  )
-}
+  );
+};
 
-export default ServiceTab
+export default ServiceTab;

@@ -64,18 +64,38 @@ export const getRouteAuthority = (path: string, routeData: Route[]) => {
 export const getBtnColor = (type: any) => {
   switch (type) {
     case 'GET':
-      return '#85BCBF';
+      return 'rgb(37,198,252)';
     case 'POST':
-      return '#7B76AC';
+      return 'rgb(64,219,217)';
     case 'PUT':
-      return '#5C0C7B';
+      return 'rgb(234,240,72)';
     case 'HEAD':
-      return '#F1B000';
+      return 'rgb(42,82,1)';
     case 'DELETE':
-      return '#65CC66';
+      return 'rgb(255,83,76)';
     case 'OPTIONS':
-      return '#FF6766';
+      return 'rgb(255,235,204)';
     default:
-      return '#984D54';
+      return 'rgb(237,208,190)';
+  }
+};
+
+// 根据不同的方法类型返回不同的颜色
+export const getPanelColor = (type: any) => {
+  switch (type) {
+    case 'GET':
+      return 'rgb(37,198,252,0.3)';
+    case 'POST':
+      return 'rgb(64,219,217,0.3)';
+    case 'PUT':
+      return 'rgb(234,240,72,0.3)';
+    case 'HEAD':
+      return 'rgb(42,82,1,0.3)';
+    case 'DELETE':
+      return 'rgb(255,83,76,0.3)';
+    case 'OPTIONS':
+      return 'rgb(255,235,204,0.3)';
+    default:
+      return 'rgb(237,208,190,0.3)';
   }
 };

@@ -19,7 +19,7 @@ import { Result, Button } from 'antd';
 import Authorized from '@/utils/Authorized';
 import { ConnectState } from '@/models/connect';
 import { isAntDesignPro, getAuthorityFromRouter } from '@/utils/utils';
-import logo from '../assets/logo.svg';
+import logo from '../assets/logo.png';
 
 const noMatch = (
   <Result
@@ -60,7 +60,7 @@ const menuDataRender = (menuList: MenuDataItem[]): MenuDataItem[] =>
 
 const defaultFooterDom = (
   <DefaultFooter
-    copyright="2019 蚂蚁金服体验技术部出品"
+    copyright="2020 stalary&clairezyw"
     links={[
       {
         key: 'Ant Design Pro',
