@@ -7,6 +7,8 @@ import { ServiceState } from '../../models/service';
 import { ConnectState } from '@/models/connect';
 import s from './index.less';
 import HeaderCard from '@/components/HeaderCard';
+import ServiceTab from '@/components/ServiceTab';
+import { BASE_URL } from '@/utils/request';
 
 interface OverViewProps {
   dispatch: Dispatch<AnyAction>;
@@ -57,7 +59,7 @@ const OverView: React.FC<OverViewProps> = props => {
 
   const handleCheckDetail = (record: any, idx: any) => {
     if (record.doc) {
-      router.push({ pathname: `/serviceDetail/${idx}`, state: record });
+      router.push({ pathname: `/serviceDetail/${idx}`, state: { url: record.url, gateway } });
     }
   };
 
@@ -81,6 +83,7 @@ const OverView: React.FC<OverViewProps> = props => {
           />
         </Card>
       )}
+      {!gateway && <ServiceTab serviceData={props.serviceData} serviceUrl={BASE_URL} />}
     </>
   );
 };

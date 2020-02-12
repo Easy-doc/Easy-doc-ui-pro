@@ -1,9 +1,10 @@
 /* eslint-disable react/no-array-index-key */
 import React from 'react';
-import { Collapse, Button, Form, Row, Col, Input, Divider, Table } from 'antd';
+import { Collapse, Button, Row, Col, Divider } from 'antd';
 import { getBtnColor, getPanelColor } from '@/utils/utils';
 import s from './index.less';
-import TextArea from 'antd/lib/input/TextArea';
+import FormContent from '@/components/FormContent';
+import ModelTable from '@/components/ModelTable';
 
 const { Panel } = Collapse;
 
@@ -15,32 +16,12 @@ interface SeviceItemProps {
     author: string;
     methodList: Array<object>;
   };
-  key: string;
+  serviceUrl: string;
+  idx: string;
 }
-
-const subColumns = [
-  {
-    title: '名称',
-    dataIndex: 'name',
-    key: 'name',
-  },
-  {
-    title: '类型',
-    dataIndex: 'type',
-    key: 'type',
-  },
-  {
-    title: '描述',
-    dataIndex: 'description',
-    key: 'description',
-  },
-];
 
 const ServiceItem: React.FC<SeviceItemProps> = props => {
   const { name, path, description, author, methodList } = props.detailData;
-  const [form] = Form.useForm();
-
-  const handleSubmit = () => {};
 
   const renderPanelHeader = () => (
     <section className={s.header}>
@@ -63,15 +44,6 @@ const ServiceItem: React.FC<SeviceItemProps> = props => {
     </section>
   );
 
-  const renderResPanelHeader = (field: any) => (
-    <section className={s.header}>
-      <div>
-        <span className={s.name}>{field.name}</span>
-        <span className={s.path}>{field.description}</span>
-      </div>
-    </section>
-  );
-
   const renderSubContent = (method: any) => (
     <section className={s.subContent}>
       {method.paramList && method.paramList.length > 0 && (
@@ -82,41 +54,8 @@ const ServiceItem: React.FC<SeviceItemProps> = props => {
       )}
       <Divider />
       <section>
-        {method.paramList &&
-          method.paramList.map((params: any, idx: any) => (
-            <Form form={form} onFinish={handleSubmit}>
-              <Row gutter={[16, 45]} key={`params-${idx}`}>
-                <Col span={12} className={s.params}>
-                  <p>
-                    {params.name}
-                    {params.required && <span className={s.red}>*required</span>}
-                  </p>
-                  <i>{params.type}</i>
-                </Col>
-                <Col span={12}>
-                  <p>{params.description}</p>
-                  {params.type === 'object' ? (
-                    <Form.Item name={params.name}>
-                      <TextArea />
-                    </Form.Item>
-                  ) : (
-                    <Form.Item name={params.name}>
-                      <Input size="large" />
-                    </Form.Item>
-                  )}
-                </Col>
-              </Row>
-            </Form>
-          ))}
+        <FormContent method={method} path={path} serviceUrl={props.serviceUrl} />
       </section>
-      <Button
-        type="primary"
-        size="large"
-        className={s.btn}
-        style={{ background: getBtnColor(method.type) }}
-      >
-        运行
-      </Button>
       <section>
         {method.responseList && method.responseList.length > 0 && (
           <Row className={s.paramTitle}>
@@ -132,26 +71,15 @@ const ServiceItem: React.FC<SeviceItemProps> = props => {
                 <Col span={12}>{res.code}</Col>
                 <Col span={12}>{res.description}</Col>
               </Row>
+              <Divider />
+              <Row className={s.paramTitle}>
+                <Col span={12}>返回值</Col>
+              </Row>
               <Row>
                 {res.fieldList &&
                   res.fieldList.map((field: any, fieldIdx: any) => (
-                    <Col span={24}>
-                      <Collapse bordered={false} defaultActiveKey={['field-0']}>
-                        <Panel
-                          key={`field-${fieldIdx}`}
-                          className={s.panel}
-                          header={renderResPanelHeader(field)}
-                          style={{ background: getPanelColor(method.type) }}
-                        >
-                          <Table
-                            rowKey="name"
-                            columns={subColumns}
-                            childrenColumnName="fieldList"
-                            dataSource={field.fieldList}
-                            pagination={false}
-                          />
-                        </Panel>
-                      </Collapse>
+                    <Col span={24} key={`fieldList-${fieldIdx}`}>
+                      <ModelTable field={field} type={method.type} idx={fieldIdx} />
                     </Col>
                   ))}
               </Row>
@@ -163,7 +91,7 @@ const ServiceItem: React.FC<SeviceItemProps> = props => {
 
   return (
     <Collapse bordered={false} defaultActiveKey={['1']}>
-      <Panel key={props.key} className={s.panel} header={renderPanelHeader()}>
+      <Panel key={props.idx} className={s.panel} header={renderPanelHeader()}>
         {methodList &&
           methodList.map((method, idx) => (
             <Collapse bordered={false} key={`method-${idx}`}>

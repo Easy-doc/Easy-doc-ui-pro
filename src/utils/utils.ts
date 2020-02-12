@@ -99,3 +99,32 @@ export const getPanelColor = (type: any) => {
       return 'rgb(237,208,190,0.3)';
   }
 };
+
+export const jsonParse = (obj: any) => {
+  if (!(obj instanceof Object)) {
+    return '';
+  }
+  return JSON.stringify(obj, null, 2);
+};
+
+export const getDefault = (val: any, type: any) => {
+  if (val === null) {
+    switch (type) {
+      case 'String':
+        return '';
+      case 'Object':
+        return {};
+      case 'Integer':
+        return 0;
+      case 'Double':
+        return 0.0;
+      case 'Boolean':
+        return false;
+      case 'List':
+        return [];
+      default:
+        return '';
+    }
+  }
+  return val;
+};

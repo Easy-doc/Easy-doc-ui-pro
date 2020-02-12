@@ -10,6 +10,7 @@ const { TabPane } = Tabs;
 
 interface ServiceTabProps {
   serviceData: ServiceState;
+  serviceUrl: string;
 }
 
 const ServiceTab: React.FC<ServiceTabProps> = props => {
@@ -23,13 +24,17 @@ const ServiceTab: React.FC<ServiceTabProps> = props => {
         <TabPane tab="接口列表" key="serviceList">
           {controllerList &&
             controllerList.map((service: any, idx: any) => (
-              <ServiceItem detailData={service} key={`service-${idx}`} />
+              <ServiceItem
+                detailData={service}
+                serviceUrl={props.serviceUrl}
+                idx={`service-${idx}`}
+              />
             ))}
         </TabPane>
         <TabPane tab="对象列表" key="modelList">
           {modelList &&
             modelList.map((model: any, idx: any) => (
-              <ModelItem detailData={model} key={`control-${idx}`} />
+              <ModelItem detailData={model} idx={`control-${idx}`} />
             ))}
         </TabPane>
       </Tabs>
