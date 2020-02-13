@@ -20,22 +20,16 @@ const ServiceTab: React.FC<ServiceTabProps> = props => {
 
   return (
     <Card className={s.card}>
-      <Tabs defaultActiveKey="1" onChange={callback}>
+      <Tabs defaultActiveKey="serviceList" onChange={callback}>
         <TabPane tab="接口列表" key="serviceList">
           {controllerList &&
             controllerList.map((service: any, idx: any) => (
-              <ServiceItem
-                detailData={service}
-                serviceUrl={props.serviceUrl}
-                idx={`service-${idx}`}
-              />
+              <ServiceItem detailData={service} serviceUrl={props.serviceUrl} idx={idx} />
             ))}
         </TabPane>
         <TabPane tab="对象列表" key="modelList">
           {modelList &&
-            modelList.map((model: any, idx: any) => (
-              <ModelItem detailData={model} idx={`control-${idx}`} />
-            ))}
+            modelList.map((model: any, idx: any) => <ModelItem detailData={model} idx={idx} />)}
         </TabPane>
       </Tabs>
     </Card>

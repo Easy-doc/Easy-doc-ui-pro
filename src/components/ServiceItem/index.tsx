@@ -1,5 +1,5 @@
 /* eslint-disable react/no-array-index-key */
-import React from 'react';
+import React, { useState } from 'react';
 import { Collapse, Button, Row, Col, Divider } from 'antd';
 import { getBtnColor, getPanelColor } from '@/utils/utils';
 import s from './index.less';
@@ -14,7 +14,7 @@ interface SeviceItemProps {
     path: string;
     description: string;
     author: string;
-    methodList: Array<object>;
+    methodList: Array<any>;
   };
   serviceUrl: string;
   idx: string;
@@ -22,29 +22,46 @@ interface SeviceItemProps {
 
 const ServiceItem: React.FC<SeviceItemProps> = props => {
   const { name, path, description, author, methodList } = props.detailData;
+  const [hash, setHash] = useState<string[]>([]);
 
   const renderPanelHeader = () => (
     <section className={s.header}>
       <div>
-        <span className={s.name}>{name}</span>
-        <span className={s.path}>{path}</span>
-        <span className={s.path}>{description}</span>
+        <a
+          href={`#/controller/${props.idx}`}
+          id={`#/controller/${props.idx}`}
+          className={s.panelHeader}
+        >
+          <span className={s.name}>{name}</span>
+          <span className={s.path}>{path}</span>
+          <span className={s.path}>{description}</span>
+        </a>
       </div>
       <div>{`By ${author}`}</div>
     </section>
   );
 
-  const renderSubHeader = (method: any) => (
+  const handlePanelHeader = (key: any) => {
+    hash[1] = key[0];
+    setHash(hash);
+  };
+
+  const renderSubHeader = (method: any, key: any) => (
     <section className={s.subHeader}>
       <Button className={s.button} style={{ background: getBtnColor(method.type) }}>
         {method.type || 'ALL'}
       </Button>
-      <p className={s.path}>{method.path}</p>
-      <p className={s.path}>{method.description}</p>
+      <a
+        href={`#/controller/${props.idx}/method/${key}`}
+        id={`#/controller/${props.idx}/method/${key}`}
+      >
+        <span className={s.path}>{method.path}</span>
+        <span className={s.path}>{method.description}</span>
+      </a>
     </section>
   );
 
-  const renderSubContent = (method: any) => (
+  const renderSubContent = (method: any, methodIdx: any) => (
     <section className={s.subContent}>
       {method.paramList && method.paramList.length > 0 && (
         <Row className={s.paramTitle}>
@@ -54,7 +71,12 @@ const ServiceItem: React.FC<SeviceItemProps> = props => {
       )}
       <Divider />
       <section>
-        <FormContent method={method} path={path} serviceUrl={props.serviceUrl} />
+        <FormContent
+          method={method}
+          path={path}
+          serviceUrl={props.serviceUrl}
+          href={`#/controller/0/method/${methodIdx}`}
+        />
       </section>
       <section>
         {method.responseList && method.responseList.length > 0 && (
@@ -79,7 +101,12 @@ const ServiceItem: React.FC<SeviceItemProps> = props => {
                 {res.fieldList &&
                   res.fieldList.map((field: any, fieldIdx: any) => (
                     <Col span={24} key={`fieldList-${fieldIdx}`}>
-                      <ModelTable field={field} type={method.type} idx={fieldIdx} />
+                      <ModelTable
+                        field={field}
+                        type={method.type}
+                        idx={fieldIdx}
+                        href={`#/controller/${props.idx}/method/${methodIdx}`}
+                      />
                     </Col>
                   ))}
               </Row>
@@ -90,21 +117,21 @@ const ServiceItem: React.FC<SeviceItemProps> = props => {
   );
 
   return (
-    <Collapse bordered={false} defaultActiveKey={['1']}>
+    <Collapse bordered={false} onChange={handlePanelHeader} activeKey={hash[1]}>
       <Panel key={props.idx} className={s.panel} header={renderPanelHeader()}>
         {methodList &&
           methodList.map((method, idx) => (
             <Collapse bordered={false} key={`method-${idx}`}>
               <Panel
                 key={idx}
-                header={renderSubHeader(method)}
+                header={renderSubHeader(method, idx)}
                 className={s.panel}
                 style={{
                   background: getPanelColor(method.type),
                   border: `1px solid ${getBtnColor(method.type)}`,
                 }}
               >
-                {renderSubContent(method)}
+                {renderSubContent(method, idx)}
               </Panel>
             </Collapse>
           ))}

@@ -10,6 +10,13 @@ export interface seviceParamsType {
 }
 
 // 获取接口列表
-export const getMethodList = (params: LoginParamsType) => request.get('/easy-doc/resource', { params })
+export const getMethodList = (params: LoginParamsType) =>
+  request.get('/easy-doc/resource', { params });
 
-export const getSeviceDetail = (params: seviceParamsType) => request2.get(`${params.url}/easy-doc/resource`)
+export const getSeviceDetail = (params: seviceParamsType) =>
+  request2.get(`${params.url}/easy-doc/resource`);
+
+// export const getSeviceDetail = (params: seviceParamsType) => request2(`${params.url}/easy-doc/resource`, {
+//   method: params.method,
+
+// })

@@ -15,47 +15,47 @@ interface OverViewProps {
   serviceData: ServiceState;
 }
 
-const columns = [
-  {
-    title: '服务名称',
-    dataIndex: 'name',
-    key: 'name',
-  },
-  {
-    title: '服务地址',
-    dataIndex: 'url',
-    key: 'url',
-  },
-  {
-    title: '是否存在文档',
-    dataIndex: 'doc',
-    key: 'doc',
-    render: (doc: boolean) => {
-      const color = doc ? 'green' : 'volcano';
-      return (
-        <Tag color={color} key="doc">
-          {doc ? '是' : '否'}
-        </Tag>
-      );
-    },
-  },
-  {
-    title: '是否验证权限',
-    dataIndex: 'auth',
-    key: 'auth',
-    render: (auth: boolean) => {
-      const color = auth ? 'green' : 'volcano';
-      return (
-        <Tag color={color} key="auth">
-          {auth ? '是' : '否'}
-        </Tag>
-      );
-    },
-  },
-];
-
 const OverView: React.FC<OverViewProps> = props => {
   const { gateway, serviceList } = props.serviceData;
+
+  const columns = [
+    {
+      title: '服务名称',
+      dataIndex: 'name',
+      key: 'name',
+    },
+    {
+      title: '服务地址',
+      dataIndex: 'url',
+      key: 'url',
+    },
+    {
+      title: '是否存在文档',
+      dataIndex: 'doc',
+      key: 'doc',
+      render: (doc: boolean) => {
+        const color = doc ? 'green' : 'volcano';
+        return (
+          <Tag color={color} key="doc">
+            {doc ? '是' : '否'}
+          </Tag>
+        );
+      },
+    },
+    {
+      title: '是否验证权限',
+      dataIndex: 'auth',
+      key: 'auth',
+      render: (auth: boolean) => {
+        const color = auth ? 'green' : 'volcano';
+        return (
+          <Tag color={color} key="auth">
+            {auth ? '是' : '否'}
+          </Tag>
+        );
+      },
+    },
+  ];
 
   const handleCheckDetail = (record: any, idx: any) => {
     if (record.doc) {

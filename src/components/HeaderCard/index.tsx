@@ -44,7 +44,9 @@ const HeaderCard: React.FC<HeaderCardProps> = props => {
       <Row justify="start" gutter={16}>
         <Col span={span}>
           <Card className={s.card}>
-            <h1>{`服务名称：${name}`}</h1>
+            <h1>
+              {gateway ? '网关名称' : '服务名称'}：{name}
+            </h1>
             <h4>{`项目描述：${description}`}</h4>
             <Divider />
             <UserOutlined />

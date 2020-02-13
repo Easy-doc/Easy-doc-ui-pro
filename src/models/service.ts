@@ -4,17 +4,19 @@ import { Reducer } from 'redux';
 import { getMethodList, getSeviceDetail } from '@/services/service';
 
 export interface ServiceState {
-  name?: string,
-  description?: string,
-  contact?: string,
-  gateway?: boolean,
-  totalMethod?: number,
-  deprecatedMethod?: number,
-  totalModel?: number,
-  deprecatedModel?: number,
-  totalService?: number,
-  docService?: number,
-  serviceList?: Array<object>,
+  name?: string;
+  description?: string;
+  contact?: string;
+  gateway?: boolean;
+  totalMethod?: number;
+  deprecatedMethod?: number;
+  totalModel?: number;
+  deprecatedModel?: number;
+  totalService?: number;
+  docService?: number;
+  serviceList?: Array<any>;
+  modelList?: Array<any>;
+  controllerList?: Array<any>;
 }
 
 export interface ServiceModelState {
@@ -42,20 +44,20 @@ const serviceModel: ServiceModelType = {
   },
 
   effects: {
-    *fetchService({ payload }, { call, put}) {
-      const response = yield call(getMethodList, { ...payload })
+    *fetchService({ payload }, { call, put }) {
+      const response = yield call(getMethodList, { ...payload });
       yield put({
         type: 'saveService',
         payload: response.data,
-      })
+      });
     },
     *fetchServiceDetail({ payload }, { call, put }) {
-      const response = yield call(getSeviceDetail, { ...payload })
+      const response = yield call(getSeviceDetail, { ...payload });
       yield put({
         type: 'saveServiceDetail',
         payload: response.data,
-      })
-    }
+      });
+    },
   },
 
   reducers: {
@@ -69,7 +71,7 @@ const serviceModel: ServiceModelType = {
       return {
         ...state,
         serviceData: action.payload || {},
-      }
+      };
     },
   },
 };

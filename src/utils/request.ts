@@ -45,10 +45,16 @@ const errorHandler = (error: { response: Response }): Response => {
   return response;
 };
 
+const CONTEXT_PATH = () => {
+  if (document.location.pathname.split('/')[1] === 'easy-doc.html') {
+    return '';
+  }
+  return `/ + ${document.location.pathname.split('/')[1]}`;
+};
+
 export const BASE_URL = {
   development: 'http://tiku-gateway-test.inner.youdao.com',
-  // http://tiku-gateway-test.inner.youdao.com/easy-doc.html
-  production: 'https://ke.youdao.com/tiku/interact/',
+  production: window.location.origin + CONTEXT_PATH,
 }[process.env.MYENV || 'development'];
 
 /**
@@ -63,5 +69,4 @@ export const request = extend({
 export const request2 = extend({
   errorHandler, // 默认错误处理
   credentials: 'include', // 默认请求是否带上cookie
-})
-
+});
