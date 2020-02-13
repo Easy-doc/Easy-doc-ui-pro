@@ -15,8 +15,3 @@ export const getMethodList = (params: LoginParamsType) =>
 
 export const getSeviceDetail = (params: seviceParamsType) =>
   request2.get(`${params.url}/easy-doc/resource`);
-
-// export const getSeviceDetail = (params: seviceParamsType) => request2(`${params.url}/easy-doc/resource`, {
-//   method: params.method,
-
-// })

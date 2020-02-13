@@ -1,5 +1,5 @@
 /* eslint-disable react/no-array-index-key */
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Collapse, Table } from 'antd';
 import s from './index.less';
 
@@ -37,6 +37,19 @@ const subColumns = [
 const ModelItem: React.FC<ModelItemProps> = props => {
   const { name, description, author, fieldList } = props.detailData;
 
+  const [hash, setHash] = useState<string[]>([]);
+
+  useEffect(() => {
+    const temp = window.location.hash;
+    if (temp) {
+      const tempArr = temp.split('/');
+      if (tempArr.length >= 2 && tempArr[1] === 'model') {
+        hash[0] = tempArr[2];
+      }
+      setHash(hash);
+    }
+  }, []);
+
   const renderPanelHeader = () => (
     <section className={s.header}>
       <div>
@@ -49,8 +62,13 @@ const ModelItem: React.FC<ModelItemProps> = props => {
     </section>
   );
 
+  const handlePanelHeader = (key: any) => {
+    hash[0] = key;
+    setHash(hash);
+  };
+
   return (
-    <Collapse bordered={false} defaultActiveKey={['1']}>
+    <Collapse bordered={false} onChange={handlePanelHeader} activeKey={hash[0]} accordion>
       <Panel key={props.idx} className={s.panel} header={renderPanelHeader()}>
         <Table
           rowKey="name"

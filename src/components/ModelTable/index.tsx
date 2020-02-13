@@ -1,5 +1,5 @@
 /* eslint-disable react/no-array-index-key */
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Collapse, Table } from 'antd';
 import { getPanelColor } from '@/utils/utils';
 import s from './index.less';
@@ -34,6 +34,19 @@ const subColumns = [
 const ModelTable: React.FC<ModelTableProps> = props => {
   const { name, description, fieldList } = props.field;
 
+  const [hash, setHash] = useState('');
+
+  useEffect(() => {
+    const temp = window.location.hash;
+    if (temp) {
+      const tempArr = temp.split('/');
+      // console.log('ModelTable.useEffect', tempArr)
+      if (temp.length >= 6) {
+        setHash(tempArr[6]);
+      }
+    }
+  }, []);
+
   const renderResPanelHeader = () => (
     <div>
       <a href={`${props.href}/response/${props.idx}`} id={`${props.href}/response/${props.idx}`}>
@@ -43,8 +56,12 @@ const ModelTable: React.FC<ModelTableProps> = props => {
     </div>
   );
 
+  const handlePanelHeader = (key: any) => {
+    setHash(key);
+  };
+
   return (
-    <Collapse bordered={false}>
+    <Collapse bordered={false} onChange={handlePanelHeader} activeKey={hash} accordion>
       <Panel
         key={props.idx}
         header={renderResPanelHeader()}

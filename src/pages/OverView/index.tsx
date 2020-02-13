@@ -58,6 +58,15 @@ const OverView: React.FC<OverViewProps> = props => {
   ];
 
   const handleCheckDetail = (record: any, idx: any) => {
+    // 网关模式下需要暂存子服务的请求地址
+    if (gateway) {
+      const serviceMap = new Map();
+      serviceList.map((service: any, serviceIdx: number) => {
+        serviceMap.set(serviceIdx, service.url);
+        return true;
+      });
+      localStorage.setItem('easy-doc-service-map', JSON.stringify([...serviceMap]));
+    }
     if (record.doc) {
       router.push({ pathname: `/serviceDetail/${idx}`, state: { url: record.url, gateway } });
     }

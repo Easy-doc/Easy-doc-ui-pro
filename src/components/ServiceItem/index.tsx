@@ -1,5 +1,5 @@
 /* eslint-disable react/no-array-index-key */
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Collapse, Button, Row, Col, Divider } from 'antd';
 import { getBtnColor, getPanelColor } from '@/utils/utils';
 import s from './index.less';
@@ -22,7 +22,21 @@ interface SeviceItemProps {
 
 const ServiceItem: React.FC<SeviceItemProps> = props => {
   const { name, path, description, author, methodList } = props.detailData;
-  const [hash, setHash] = useState<string[]>([]);
+  const [hash, setHash] = useState('');
+  const [subHash, setSubHash] = useState('');
+
+  useEffect(() => {
+    const temp = window.location.hash;
+    if (temp) {
+      const tempArr = temp.split('/');
+      if (tempArr.length >= 2 && tempArr[1] === 'controller') {
+        setHash(tempArr[2]);
+        if (temp.length >= 4) {
+          setSubHash(tempArr[4]);
+        }
+      }
+    }
+  }, []);
 
   const renderPanelHeader = () => (
     <section className={s.header}>
@@ -42,8 +56,7 @@ const ServiceItem: React.FC<SeviceItemProps> = props => {
   );
 
   const handlePanelHeader = (key: any) => {
-    hash[1] = key[0];
-    setHash(hash);
+    setHash(key);
   };
 
   const renderSubHeader = (method: any, key: any) => (
@@ -60,6 +73,10 @@ const ServiceItem: React.FC<SeviceItemProps> = props => {
       </a>
     </section>
   );
+
+  const handleSubPanelHeader = (key: any) => {
+    setSubHash(key);
+  };
 
   const renderSubContent = (method: any, methodIdx: any) => (
     <section className={s.subContent}>
@@ -117,11 +134,17 @@ const ServiceItem: React.FC<SeviceItemProps> = props => {
   );
 
   return (
-    <Collapse bordered={false} onChange={handlePanelHeader} activeKey={hash[1]}>
+    <Collapse bordered={false} onChange={handlePanelHeader} activeKey={hash} accordion>
       <Panel key={props.idx} className={s.panel} header={renderPanelHeader()}>
         {methodList &&
           methodList.map((method, idx) => (
-            <Collapse bordered={false} key={`method-${idx}`}>
+            <Collapse
+              bordered={false}
+              key={`method-${idx}`}
+              accordion
+              activeKey={subHash}
+              onChange={handleSubPanelHeader}
+            >
               <Panel
                 key={idx}
                 header={renderSubHeader(method, idx)}

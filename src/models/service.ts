@@ -4,19 +4,19 @@ import { Reducer } from 'redux';
 import { getMethodList, getSeviceDetail } from '@/services/service';
 
 export interface ServiceState {
-  name?: string;
-  description?: string;
-  contact?: string;
-  gateway?: boolean;
-  totalMethod?: number;
-  deprecatedMethod?: number;
-  totalModel?: number;
-  deprecatedModel?: number;
-  totalService?: number;
-  docService?: number;
-  serviceList?: Array<any>;
-  modelList?: Array<any>;
-  controllerList?: Array<any>;
+  name: string;
+  description: string;
+  contact: string;
+  gateway: boolean;
+  totalMethod: number;
+  deprecatedMethod: number;
+  totalModel: number;
+  deprecatedModel: number;
+  totalService: number;
+  docService: number;
+  serviceList: Array<any>;
+  modelList: Array<any>;
+  controllerList: Array<any>;
 }
 
 export interface ServiceModelState {

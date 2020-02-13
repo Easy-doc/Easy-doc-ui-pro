@@ -18,12 +18,25 @@ const ServiceDetail: React.FC<ServiceDetailProps> = props => {
   const [serviceUrl, setUrl] = useState(BASE_URL);
 
   useEffect(() => {
+    let requestUrl;
     if (location.state && location.state.url) {
       dispatch({
         type: 'service/fetchServiceDetail',
         payload: { url: location.state.url },
       });
-      setUrl(location.state.gateway ? location.state.url : BASE_URL);
+      requestUrl = location.state.gateway ? location.state.url : BASE_URL;
+    } else {
+      const temPath = location.pathname.split('/');
+      const localStr = localStorage.getItem('easy-doc-service-map');
+      if (localStr) {
+        const serviceMap = new Map<number, string>(JSON.parse(localStr));
+        requestUrl = serviceMap.get(parseInt(temPath[2], 10));
+      }
+      dispatch({
+        type: 'service/fetchServiceDetail',
+        payload: { url: requestUrl },
+      });
+      setUrl(requestUrl);
     }
   }, []);
 

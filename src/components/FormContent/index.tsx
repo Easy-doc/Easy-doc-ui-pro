@@ -99,7 +99,7 @@ const FormContent: React.FC<FormContentProps> = props => {
               <p>{param.description}</p>
               {param.type === 'Object' ? (
                 <Form.Item name={param.name}>
-                  <TextArea />
+                  <TextArea autoSize />
                 </Form.Item>
               ) : (
                 <Form.Item name={param.name}>
