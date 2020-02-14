@@ -53,7 +53,7 @@ const CONTEXT_PATH = () => {
 };
 
 export const BASE_URL = {
-  development: 'http://tiku-gateway-test.inner.youdao.com',
+  development: 'http://ke-tiku-pre.youdao.com',
   production: window.location.origin + CONTEXT_PATH,
 }[process.env.MYENV || 'development'];
 

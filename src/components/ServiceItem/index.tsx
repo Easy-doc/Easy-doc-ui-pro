@@ -2,9 +2,9 @@
 import React, { useState, useEffect } from 'react';
 import { Collapse, Button, Row, Col, Divider } from 'antd';
 import { getBtnColor, getPanelColor } from '@/utils/utils';
-import s from './index.less';
 import FormContent from '@/components/FormContent';
 import ModelTable from '@/components/ModelTable';
+import s from './index.less';
 
 const { Panel } = Collapse;
 
@@ -27,15 +27,29 @@ const ServiceItem: React.FC<SeviceItemProps> = props => {
 
   useEffect(() => {
     const temp = window.location.hash;
+    let tempId = '';
     if (temp) {
       const tempArr = temp.split('/');
       if (tempArr.length >= 2 && tempArr[1] === 'controller') {
         setHash(tempArr[2]);
-        if (temp.length >= 4) {
+        tempId = tempArr[2];
+        if (tempArr.length >= 4) {
           setSubHash(tempArr[4]);
+          tempId = `${tempArr[2]}/method/${tempArr[4]}`;
         }
       }
     }
+    setTimeout(() => {
+      const id = `/controller/${tempId}`;
+      const el = document.getElementById(id);
+      if (el) {
+        el.scrollIntoView({
+          behavior: 'smooth',
+          block: 'center',
+          inline: 'center',
+        });
+      }
+    }, 100);
   }, []);
 
   const renderPanelHeader = () => (
@@ -43,7 +57,7 @@ const ServiceItem: React.FC<SeviceItemProps> = props => {
       <div>
         <a
           href={`#/controller/${props.idx}`}
-          id={`#/controller/${props.idx}`}
+          id={`/controller/${props.idx}`}
           className={s.panelHeader}
         >
           <span className={s.name}>{name}</span>
@@ -66,7 +80,7 @@ const ServiceItem: React.FC<SeviceItemProps> = props => {
       </Button>
       <a
         href={`#/controller/${props.idx}/method/${key}`}
-        id={`#/controller/${props.idx}/method/${key}`}
+        id={`/controller/${props.idx}/method/${key}`}
       >
         <span className={s.path}>{method.path}</span>
         <span className={s.path}>{method.description}</span>

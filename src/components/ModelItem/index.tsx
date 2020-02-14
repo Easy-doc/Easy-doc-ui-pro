@@ -37,23 +37,35 @@ const subColumns = [
 const ModelItem: React.FC<ModelItemProps> = props => {
   const { name, description, author, fieldList } = props.detailData;
 
-  const [hash, setHash] = useState<string[]>([]);
+  const [hash, setHash] = useState();
 
   useEffect(() => {
     const temp = window.location.hash;
+    let tempId = '';
     if (temp) {
       const tempArr = temp.split('/');
       if (tempArr.length >= 2 && tempArr[1] === 'model') {
-        hash[0] = tempArr[2];
+        tempId = tempArr[2];
+        setHash(tempArr[2]);
       }
-      setHash(hash);
     }
+    setTimeout(() => {
+      const id = `/model/${tempId}`;
+      const el = document.getElementById(id);
+      if (el) {
+        el.scrollIntoView({
+          behavior: 'smooth',
+          block: 'center',
+          inline: 'center',
+        });
+      }
+    }, 100);
   }, []);
 
   const renderPanelHeader = () => (
     <section className={s.header}>
       <div>
-        <a href={`#/model/${props.idx}`} id={`#/model/${props.idx}`}>
+        <a href={`#/model/${props.idx}`} id={`/model/${props.idx}`}>
           <span className={s.name}>{name}</span>
           <span className={s.description}>{description}</span>
         </a>
@@ -63,12 +75,11 @@ const ModelItem: React.FC<ModelItemProps> = props => {
   );
 
   const handlePanelHeader = (key: any) => {
-    hash[0] = key;
-    setHash(hash);
+    setHash(key);
   };
 
   return (
-    <Collapse bordered={false} onChange={handlePanelHeader} activeKey={hash[0]} accordion>
+    <Collapse bordered={false} onChange={handlePanelHeader} activeKey={hash} accordion>
       <Panel key={props.idx} className={s.panel} header={renderPanelHeader()}>
         <Table
           rowKey="name"

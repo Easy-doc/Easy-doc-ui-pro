@@ -1,14 +1,15 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Card, Table, Tag } from 'antd';
 import { connect } from 'dva';
 import { Dispatch, AnyAction } from 'redux';
 import router from 'umi/router';
-import { ServiceState } from '../../models/service';
 import { ConnectState } from '@/models/connect';
-import s from './index.less';
 import HeaderCard from '@/components/HeaderCard';
 import ServiceTab from '@/components/ServiceTab';
+import LoginForm from '@/components/LoginForm';
 import { BASE_URL } from '@/utils/request';
+import { ServiceState } from '../../models/service';
+import s from './index.less';
 
 interface OverViewProps {
   dispatch: Dispatch<AnyAction>;
@@ -17,6 +18,48 @@ interface OverViewProps {
 
 const OverView: React.FC<OverViewProps> = props => {
   const { gateway, serviceList } = props.serviceData;
+  const [data, setData] = useState();
+  const [show, setShow] = useState(false);
+  const { dispatch } = props;
+
+  useEffect(() => {
+    dispatch({ type: 'service/fetchService' });
+  }, []);
+
+  useEffect(() => {
+    if (data) {
+      dispatch({
+        type: 'service/fetchService',
+        payload: {
+          account: data.account,
+          password: data.password,
+        },
+      });
+    }
+  }, [data]);
+
+  useEffect(() => {
+    if (data == null) {
+      // 获取不到值代表需要登陆
+      const localAuth = localStorage.getItem('easy-doc-auth');
+      // 本地不存在时需要输入信息
+      if (!localAuth) {
+        setShow(true);
+      } else {
+        setShow(false);
+        const authConfig = JSON.parse(localAuth);
+        dispatch({
+          type: 'service/fetchService',
+          payload: {
+            account: authConfig.account,
+            password: authConfig.password,
+          },
+        });
+      }
+    } else {
+      setShow(false);
+    }
+  }, [props.serviceData]);
 
   const columns = [
     {
@@ -62,23 +105,31 @@ const OverView: React.FC<OverViewProps> = props => {
     if (gateway) {
       const serviceMap = new Map();
       serviceList.map((service: any, serviceIdx: number) => {
-        serviceMap.set(serviceIdx, service.url);
+        serviceMap.set(serviceIdx, service);
         return true;
       });
       localStorage.setItem('easy-doc-service-map', JSON.stringify([...serviceMap]));
     }
     if (record.doc) {
-      router.push({ pathname: `/serviceDetail/${idx}`, state: { url: record.url, gateway } });
+      router.push({
+        pathname: `/serviceDetail/${idx}`,
+        state: {
+          url: record.url,
+          gateway,
+          auth: record.auth,
+          authConfig: record.authConfig,
+        },
+      });
     }
   };
 
-  useEffect(() => {
-    const { dispatch } = props;
-    dispatch({ type: 'service/fetchService' });
-  }, []);
+  const getData = (d: any) => {
+    setData(d);
+  };
 
   return (
     <>
+      <LoginForm showModal={show} getData={getData} />
       <HeaderCard serviceData={props.serviceData} />
       {gateway && (
         <Card title="服务列表" className={s.list}>
