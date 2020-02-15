@@ -103,7 +103,13 @@ const FormContent: React.FC<FormContentProps> = props => {
               </p>
               <i>{param.type}</i>
               {param.type === 'Object' && (
-                <ModelTable field={body} type={type} idx={idx} href={props.href} />
+                <ModelTable
+                  field={body}
+                  type={type}
+                  idx={idx}
+                  href={props.href}
+                  key={`modelTable-${idx}`}
+                />
               )}
             </Col>
             <Col span={12}>

@@ -97,12 +97,6 @@ export default {
           component: './GlobalParam',
         },
         {
-          path: '/serviceDetail',
-          hideInMenu: true,
-          name: 'serviceDetail',
-          component: './ServiceDetail',
-        },
-        {
           component: './404',
         },
       ],

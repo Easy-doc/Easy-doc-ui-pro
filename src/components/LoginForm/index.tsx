@@ -20,7 +20,6 @@ const LoginForm: React.FC<LoginFormProps> = props => {
       account: values.account,
       password: values.password,
     };
-    localStorage.setItem('easy-doc-auth', JSON.stringify(authConfig));
     const resData = await request('/easy-doc/resource', {
       method: 'GET',
       params: {
@@ -30,6 +29,7 @@ const LoginForm: React.FC<LoginFormProps> = props => {
     });
     if (resData && resData.success) {
       message.success('登陆成功');
+      localStorage.setItem('easy-doc-auth', JSON.stringify(authConfig));
       props.getData(values);
       setShow(false);
     } else {

@@ -82,6 +82,7 @@ const ModelItem: React.FC<ModelItemProps> = props => {
     <Collapse bordered={false} onChange={handlePanelHeader} activeKey={hash} accordion>
       <Panel key={props.idx} className={s.panel} header={renderPanelHeader()}>
         <Table
+          rowKey="name"
           columns={subColumns}
           childrenColumnName="fieldList"
           dataSource={fieldList}

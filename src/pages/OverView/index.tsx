@@ -18,12 +18,8 @@ const OverView: React.FC<OverViewProps> = props => {
   const { gateway, serviceList, auth } = props.serviceData;
   const [data, setData] = useState();
   const [show, setShow] = useState(false);
-  const [click, setClick] = useState(true);
+  const [request, setRequest] = useState(0);
   const { dispatch } = props;
-
-  useEffect(() => {
-    dispatch({ type: 'service/fetchService' });
-  }, []);
 
   useEffect(() => {
     if (data) {
@@ -38,7 +34,10 @@ const OverView: React.FC<OverViewProps> = props => {
   }, [data]);
 
   useEffect(() => {
-    if (auth && click) {
+    if (request === 0) {
+      dispatch({ type: 'service/fetchService' });
+      setRequest(1);
+    } else if (request === 1 && Object.keys(props.serviceData).length <= 0) {
       // 获取不到值代表需要登陆
       const localAuth = localStorage.getItem('easy-doc-auth');
       // 本地不存在时需要输入信息
@@ -55,7 +54,7 @@ const OverView: React.FC<OverViewProps> = props => {
           },
         });
       }
-      setClick(false);
+      setRequest(2);
     }
   }, [props.serviceData]);
 
