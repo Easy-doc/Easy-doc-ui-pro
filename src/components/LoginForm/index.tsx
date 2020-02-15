@@ -37,8 +37,12 @@ const LoginForm: React.FC<LoginFormProps> = props => {
     }
   };
 
+  const handleCancel = () => {
+    setShow(false);
+  };
+
   return (
-    <Modal visible={props.showModal && show} title="登录" footer={false}>
+    <Modal title="登录" visible={props.showModal && show} onCancel={handleCancel} footer={false}>
       <Form onFinish={handleSubmit} className="login-form" form={form}>
         <Form.Item name="account" rules={[{ required: true }]}>
           <Input prefix={<UserOutlined />} placeholder="Username" />

@@ -115,7 +115,7 @@ const OverView: React.FC<OverViewProps> = props => {
         <Card title="服务列表" className={s.list} key="card">
           <Table
             onRow={record => ({ onClick: () => handleCheckDetail(record) })}
-            key="card-table"
+            rowKey="name"
             dataSource={serviceList}
             columns={columns}
             size="small"
