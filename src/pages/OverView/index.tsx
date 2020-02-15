@@ -20,6 +20,7 @@ const OverView: React.FC<OverViewProps> = props => {
   const { gateway, serviceList } = props.serviceData;
   const [data, setData] = useState();
   const [show, setShow] = useState(false);
+  const [click, setClick] = useState(true);
   const { dispatch } = props;
 
   useEffect(() => {
@@ -39,7 +40,7 @@ const OverView: React.FC<OverViewProps> = props => {
   }, [data]);
 
   useEffect(() => {
-    if (data == null) {
+    if (click) {
       // 获取不到值代表需要登陆
       const localAuth = localStorage.getItem('easy-doc-auth');
       // 本地不存在时需要输入信息
@@ -56,8 +57,7 @@ const OverView: React.FC<OverViewProps> = props => {
           },
         });
       }
-    } else {
-      setShow(false);
+      setClick(false);
     }
   }, [props.serviceData]);
 
@@ -129,13 +129,13 @@ const OverView: React.FC<OverViewProps> = props => {
 
   return (
     <>
-      <LoginForm showModal={show} getData={getData} />
+      <LoginForm key="loginForm" showModal={show} getData={getData} />
       <HeaderCard serviceData={props.serviceData} />
       {gateway && (
-        <Card title="服务列表" className={s.list}>
+        <Card title="服务列表" className={s.list} key="card">
           <Table
             onRow={(record, idx) => ({ onClick: () => handleCheckDetail(record, idx) })}
-            key="url"
+            key="card-table"
             dataSource={serviceList}
             columns={columns}
             size="small"
@@ -143,7 +143,9 @@ const OverView: React.FC<OverViewProps> = props => {
           />
         </Card>
       )}
-      {!gateway && <ServiceTab serviceData={props.serviceData} serviceUrl={BASE_URL} />}
+      {!gateway && (
+        <ServiceTab key="serviceTab" serviceData={props.serviceData} serviceUrl={BASE_URL} />
+      )}
     </>
   );
 };

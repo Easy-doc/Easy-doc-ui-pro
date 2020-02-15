@@ -56,8 +56,8 @@ const ServiceDetail: React.FC<ServiceDetailProps> = props => {
 
   return (
     <>
-      <HeaderCard serviceData={props.serviceData} />
-      <ServiceTab serviceData={props.serviceData} serviceUrl={serviceUrl} />
+      <HeaderCard key="headerCard" serviceData={props.serviceData} />
+      <ServiceTab key="serviceTab" serviceData={props.serviceData} serviceUrl={serviceUrl} />
     </>
   );
 };

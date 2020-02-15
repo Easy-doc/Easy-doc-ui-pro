@@ -31,7 +31,6 @@ const errorHandler = (error: { response: Response }): Response => {
   if (response && response.status) {
     const errorText = codeMessage[response.status] || response.statusText;
     const { status, url } = response;
-
     notification.error({
       message: `请求错误 ${status}: ${url}`,
       description: errorText,
@@ -52,10 +51,8 @@ const CONTEXT_PATH = () => {
   return `/ + ${document.location.pathname.split('/')[1]}`;
 };
 
-export const BASE_URL = {
-  development: 'http://ke-tiku-pre.youdao.com',
-  production: window.location.origin + CONTEXT_PATH,
-}[process.env.MYENV || 'development'];
+// export const BASE_URL = 'http://ke-tiku-pre.youdao.com'
+export const BASE_URL = window.location.origin + CONTEXT_PATH;
 
 /**
  * 配置request请求时的默认参数
@@ -67,6 +64,6 @@ export const request = extend({
 });
 
 export const request2 = extend({
-  errorHandler, // 默认错误处理
+  // errorHandler, // 默认错误处理
   credentials: 'include', // 默认请求是否带上cookie
 });

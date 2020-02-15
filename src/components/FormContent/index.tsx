@@ -1,6 +1,6 @@
 /* eslint-disable react/no-array-index-key */
 import React, { useEffect, useState } from 'react';
-import { Button, Form, Row, Col, Input, Modal } from 'antd';
+import { Button, Form, Row, Col, Input, Modal, notification } from 'antd';
 import { getBtnColor, jsonParse, getDefault } from '@/utils/utils';
 import s from './index.less';
 import { request2 } from '@/utils/request';
@@ -43,12 +43,24 @@ const FormContent: React.FC<FormContentProps> = props => {
         requestParams[k] = v.value;
       });
     }
-    const resData = await request2(baseUrl, {
-      method: type,
+    let methodType = type;
+    if (type == null) {
+      methodType = 'GET';
+    }
+    await request2(baseUrl, {
+      method: methodType,
       params: requestParams,
       data: requestBody,
-    });
-    setData(resData);
+    })
+      .then(res => {
+        setData(res);
+      })
+      .catch(error => {
+        const { response } = error;
+        const { status, url } = response;
+        notification.error({ message: `请求错误 ${status}: ${url}` });
+        setData(error.data);
+      });
     setShowModal(true);
   };
 
