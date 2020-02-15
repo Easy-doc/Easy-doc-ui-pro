@@ -4,60 +4,65 @@ import { Dispatch, AnyAction } from 'redux';
 import { ConnectState } from '@/models/connect';
 import HeaderCard from '@/components/HeaderCard';
 import ServiceTab from '@/components/ServiceTab';
-import { BASE_URL } from '@/utils/request';
+import LoginForm from '@/components/LoginForm';
 import { ServiceState } from '../../models/service';
 
 interface ServiceDetailProps {
   dispatch: Dispatch<AnyAction>;
   serviceData: ServiceState;
-  location: any;
 }
 
 const ServiceDetail: React.FC<ServiceDetailProps> = props => {
-  const { location, dispatch } = props;
-  const [serviceUrl, setServiceUrl] = useState(BASE_URL);
+  const { dispatch, serviceData } = props;
+  const [data, setData] = useState();
+  const [show, setShow] = useState(false);
+  const [click, setClick] = useState(true);
 
   useEffect(() => {
-    let requestUrl;
-    let auth;
-    let authConfig;
-    if (location.state && location.state.url) {
-      requestUrl = location.state.gateway ? location.state.url : BASE_URL;
-      auth = location.state.auth;
-      authConfig = location.state.authConfig;
-    } else {
-      const temPath = location.pathname.split('/');
-      const localStr = localStorage.getItem('easy-doc-service-map');
-      if (localStr) {
-        const serviceMap = new Map<number, any>(JSON.parse(localStr));
-        const serviceInfo = serviceMap.get(parseInt(temPath[2], 10));
-        requestUrl = serviceInfo.url;
-        auth = serviceInfo.auth;
-        authConfig = serviceInfo.authConfig;
-      }
-    }
-    setServiceUrl(requestUrl);
-    if (auth) {
+    dispatch({ type: 'service/fetchService' });
+  }, []);
+
+  useEffect(() => {
+    if (data) {
       dispatch({
-        type: 'service/fetchServiceDetail',
+        type: 'service/fetchService',
         payload: {
-          url: requestUrl,
-          account: authConfig.account,
-          password: authConfig.password,
+          account: data.account,
+          password: data.password,
         },
       });
-    } else {
-      dispatch({
-        type: 'service/fetchServiceDetail',
-        payload: { url: requestUrl },
-      });
     }
-  }, []);
+  }, [data]);
+
+  useEffect(() => {
+    if (serviceData.auth && click) {
+      const localAuth = localStorage.getItem('easy-doc-auth');
+      if (!localAuth) {
+        setShow(true);
+      } else {
+        setShow(false);
+        const authConfig = JSON.parse(localAuth);
+        dispatch({
+          type: 'service/fetchService',
+          payload: {
+            account: authConfig.account,
+            password: authConfig.password,
+          },
+        });
+      }
+      setClick(false);
+    }
+  }, [props.serviceData]);
+
+  const getData = (d: any) => {
+    setData(d);
+  };
 
   return (
     <>
-      <HeaderCard key="headerCard" serviceData={props.serviceData} />
-      <ServiceTab key="serviceTab" serviceData={props.serviceData} serviceUrl={serviceUrl} />
+      <LoginForm key="loginForm" showModal={show} getData={getData} />
+      <HeaderCard serviceData={props.serviceData} />
+      <ServiceTab serviceData={props.serviceData} />
     </>
   );
 };

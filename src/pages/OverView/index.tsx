@@ -2,12 +2,10 @@ import React, { useEffect, useState } from 'react';
 import { Card, Table, Tag } from 'antd';
 import { connect } from 'dva';
 import { Dispatch, AnyAction } from 'redux';
-import router from 'umi/router';
 import { ConnectState } from '@/models/connect';
 import HeaderCard from '@/components/HeaderCard';
 import ServiceTab from '@/components/ServiceTab';
 import LoginForm from '@/components/LoginForm';
-import { BASE_URL } from '@/utils/request';
 import { ServiceState } from '../../models/service';
 import s from './index.less';
 
@@ -17,7 +15,7 @@ interface OverViewProps {
 }
 
 const OverView: React.FC<OverViewProps> = props => {
-  const { gateway, serviceList } = props.serviceData;
+  const { gateway, serviceList, auth } = props.serviceData;
   const [data, setData] = useState();
   const [show, setShow] = useState(false);
   const [click, setClick] = useState(true);
@@ -40,7 +38,7 @@ const OverView: React.FC<OverViewProps> = props => {
   }, [data]);
 
   useEffect(() => {
-    if (click) {
+    if (auth && click) {
       // 获取不到值代表需要登陆
       const localAuth = localStorage.getItem('easy-doc-auth');
       // 本地不存在时需要输入信息
@@ -89,37 +87,24 @@ const OverView: React.FC<OverViewProps> = props => {
       title: '是否验证权限',
       dataIndex: 'auth',
       key: 'auth',
-      render: (auth: boolean) => {
-        const color = auth ? 'green' : 'volcano';
+      render: (docAuth: boolean) => {
+        const color = docAuth ? 'green' : 'volcano';
         return (
-          <Tag color={color} key="auth">
-            {auth ? '是' : '否'}
+          <Tag color={color} key="docAuth">
+            {docAuth ? '是' : '否'}
           </Tag>
         );
       },
     },
   ];
 
-  const handleCheckDetail = (record: any, idx: any) => {
-    // 网关模式下需要暂存子服务的请求地址
-    if (gateway) {
-      const serviceMap = new Map();
-      serviceList.map((service: any, serviceIdx: number) => {
-        serviceMap.set(serviceIdx, service);
-        return true;
-      });
-      localStorage.setItem('easy-doc-service-map', JSON.stringify([...serviceMap]));
-    }
+  const handleCheckDetail = (record: any) => {
     if (record.doc) {
-      router.push({
-        pathname: `/serviceDetail/${idx}`,
-        state: {
-          url: record.url,
-          gateway,
-          auth: record.auth,
-          authConfig: record.authConfig,
-        },
-      });
+      if (!auth) {
+        window.location.href = `${record.url}/easy-doc.html`;
+      } else {
+        window.location.href = `${record.url}/easy-doc.html?account=${record.authConfig.account}&password=${record.authConfig.password}`;
+      }
     }
   };
 
@@ -143,9 +128,7 @@ const OverView: React.FC<OverViewProps> = props => {
           />
         </Card>
       )}
-      {!gateway && (
-        <ServiceTab key="serviceTab" serviceData={props.serviceData} serviceUrl={BASE_URL} />
-      )}
+      {!gateway && <ServiceTab key="serviceTab" serviceData={props.serviceData} />}
     </>
   );
 };

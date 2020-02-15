@@ -77,67 +77,35 @@ export default {
   // umi routes: https://umijs.org/zh/guide/router.html
   routes: [
     {
-      path: '/user',
-      component: '../layouts/UserLayout',
-      routes: [
-        {
-          name: 'login',
-          path: '/user/login',
-          component: './user/login',
-        },
-      ],
-    },
-    {
       path: '/',
-      component: '../layouts/SecurityLayout',
+      component: '../layouts/BasicLayout',
       routes: [
         {
           path: '/',
-          component: '../layouts/BasicLayout',
-          authority: ['admin', 'user'],
-          routes: [
-            {
-              path: '/',
-              redirect: '/overview',
-            },
-            {
-              path: '/overview',
-              name: 'overview',
-              icon: 'smile',
-              component: './OverView',
-            },
-            {
-              path: '/globalParam',
-              name: 'globalParam',
-              icon: 'smile',
-              component: './GlobalParam',
-            },
-            {
-              path: '/admin',
-              name: 'admin',
-              icon: 'crown',
-              component: './Admin',
-              authority: ['admin'],
-            },
-            {
-              path: '/serviceDetail/:page',
-              hideInMenu: true,
-              name: 'serviceDetail',
-              component: './ServiceDetail',
-            },
-            {
-              component: './404',
-            },
-          ],
+          redirect: '/easy-doc.html',
+        },
+        {
+          path: '/easy-doc',
+          name: 'overview',
+          icon: 'smile',
+          component: './OverView',
+        },
+        {
+          path: '/globalParam',
+          name: 'globalParam',
+          icon: 'smile',
+          component: './GlobalParam',
+        },
+        {
+          path: '/serviceDetail',
+          hideInMenu: true,
+          name: 'serviceDetail',
+          component: './ServiceDetail',
         },
         {
           component: './404',
         },
       ],
-    },
-
-    {
-      component: './404',
     },
   ],
   // Theme for antd: https://ant.design/docs/react/customize-theme-cn
@@ -188,6 +156,9 @@ export default {
     basePath: '/',
   },
   publicPath: './',
+  exportStatic: {
+    htmlSuffix: true,
+  },
   // chainWebpack: webpackPlugin,
   // proxy: {
   //   '/server/api/': {

@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { Button, Form, Row, Col, Input, Modal, notification } from 'antd';
 import { getBtnColor, jsonParse, getDefault } from '@/utils/utils';
 import s from './index.less';
-import { request2 } from '@/utils/request';
+import { request2, BASE_URL } from '@/utils/request';
 import TextArea from 'antd/lib/input/TextArea';
 import ModelTable from '@/components/ModelTable';
 
@@ -15,7 +15,6 @@ interface FormContentProps {
     paramList: any;
   };
   path: string;
-  serviceUrl: string;
   href: string;
 }
 
@@ -26,7 +25,7 @@ const FormContent: React.FC<FormContentProps> = props => {
   const [data, setData] = useState({});
 
   const handleSubmit = async () => {
-    const baseUrl = props.serviceUrl + props.path + path;
+    const baseUrl = BASE_URL + props.path + path;
     const values = form.getFieldsValue();
     let requestBody = {};
     const requestParams = {};

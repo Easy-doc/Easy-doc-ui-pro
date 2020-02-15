@@ -10,7 +10,6 @@ const { TabPane } = Tabs;
 
 interface ServiceTabProps {
   serviceData: ServiceState;
-  serviceUrl: string;
 }
 
 const ServiceTab: React.FC<ServiceTabProps> = props => {

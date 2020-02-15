@@ -16,7 +16,6 @@ interface SeviceItemProps {
     author: string;
     methodList: Array<any>;
   };
-  serviceUrl: string;
   idx: string;
 }
 
@@ -102,12 +101,7 @@ const ServiceItem: React.FC<SeviceItemProps> = props => {
       )}
       <Divider />
       <section>
-        <FormContent
-          method={method}
-          path={path}
-          serviceUrl={props.serviceUrl}
-          href={`#/controller/0/method/${methodIdx}`}
-        />
+        <FormContent method={method} path={path} href={`#/controller/0/method/${methodIdx}`} />
       </section>
       <section>
         {method.responseList && method.responseList.length > 0 && (
