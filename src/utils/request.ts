@@ -12,10 +12,10 @@ const CONTEXT_PATH = () => {
   ) {
     return '';
   }
-  return `/ + ${document.location.pathname.split('/')[1]}`;
+  return `/${document.location.pathname.split('/')[1]}`;
 };
 
-// export const BASE_URL = 'http://tiku-quiz-pre.inner.youdao.com'
+// export const BASE_URL = 'http://ke-tiku-pre.youdao.com';
 export const BASE_URL = window.location.origin + CONTEXT_PATH();
 
 /**

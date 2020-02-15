@@ -17,7 +17,6 @@ export interface ServiceState {
   serviceList: Array<any>;
   modelList: Array<any>;
   controllerList: Array<any>;
-  auth: boolean;
 }
 
 export interface ServiceModelState {

@@ -15,7 +15,7 @@ interface OverViewProps {
 }
 
 const OverView: React.FC<OverViewProps> = props => {
-  const { gateway, serviceList, auth } = props.serviceData;
+  const { gateway, serviceList } = props.serviceData;
   const [data, setData] = useState();
   const [show, setShow] = useState(false);
   const [request, setRequest] = useState(0);
@@ -99,11 +99,7 @@ const OverView: React.FC<OverViewProps> = props => {
 
   const handleCheckDetail = (record: any) => {
     if (record.doc) {
-      if (!auth) {
-        window.location.href = `${record.url}/easy-doc.html`;
-      } else {
-        window.location.href = `${record.url}/easy-doc.html?account=${record.authConfig.account}&password=${record.authConfig.password}`;
-      }
+      window.location.href = `${record.url}/easy-doc.html`;
     }
   };
 
@@ -118,7 +114,7 @@ const OverView: React.FC<OverViewProps> = props => {
       {gateway && (
         <Card title="服务列表" className={s.list} key="card">
           <Table
-            onRow={(record, idx) => ({ onClick: () => handleCheckDetail(record, idx) })}
+            onRow={record => ({ onClick: () => handleCheckDetail(record) })}
             key="card-table"
             dataSource={serviceList}
             columns={columns}

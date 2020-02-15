@@ -152,6 +152,7 @@ export default {
   publicPath: './',
   exportStatic: {
     htmlSuffix: true,
+    dynamicRoot: true,
   },
   // chainWebpack: webpackPlugin,
   // proxy: {
