@@ -14,13 +14,14 @@ interface SeviceItemProps {
     path: string;
     description: string;
     author: string;
+    deprecated: boolean;
     methodList: Array<any>;
   };
   idx: string;
 }
 
 const ServiceItem: React.FC<SeviceItemProps> = props => {
-  const { name, path, description, author, methodList } = props.detailData;
+  const { name, path, description, author, methodList, deprecated } = props.detailData;
   const [hash, setHash] = useState('');
   const [subHash, setSubHash] = useState('');
 
@@ -59,7 +60,7 @@ const ServiceItem: React.FC<SeviceItemProps> = props => {
           id={`/controller/${props.idx}`}
           className={s.panelHeader}
         >
-          <span className={s.name}>{name}</span>
+          <span className={deprecated === false ? `${s.name}` : `${s.deleteText}`}>{name}</span>
           <span className={s.path}>{path}</span>
           <span className={s.path}>{description}</span>
         </a>
@@ -81,7 +82,9 @@ const ServiceItem: React.FC<SeviceItemProps> = props => {
         href={`#/controller/${props.idx}/method/${key}`}
         id={`/controller/${props.idx}/method/${key}`}
       >
-        <span className={s.path}>{method.path}</span>
+        <span className={method.deprecated === false ? `${s.path}` : `${s.deletePath}`}>
+          {method.path}
+        </span>
         <span className={s.path}>{method.description}</span>
       </a>
     </section>

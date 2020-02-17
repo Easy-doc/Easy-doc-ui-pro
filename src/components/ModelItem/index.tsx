@@ -35,7 +35,7 @@ const subColumns = [
 ];
 
 const ModelItem: React.FC<ModelItemProps> = props => {
-  const { name, description, author, fieldList } = props.detailData;
+  const { name, description, author, fieldList, deprecated } = props.detailData;
 
   const [hash, setHash] = useState();
 
@@ -66,7 +66,7 @@ const ModelItem: React.FC<ModelItemProps> = props => {
     <section className={s.header}>
       <div>
         <a href={`#/model/${props.idx}`} id={`/model/${props.idx}`}>
-          <span className={s.name}>{name}</span>
+          <span className={deprecated === false ? `${s.name}` : `${s.deleteText}`}>{name}</span>
           <span className={s.description}>{description}</span>
         </a>
       </div>

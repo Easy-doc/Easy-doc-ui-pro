@@ -30,11 +30,11 @@ const HeaderCard: React.FC<HeaderCardProps> = props => {
         <h1>{`可用${modelText}数量`}</h1>
         <h1 className={s.total}>{total - deprecate}</h1>
         <Divider />
-        {`总${modelText}数量:`}
+        {`总${modelText}数量: `}
         <span className={s.bold}>{total}</span>
         <Divider type="vertical" />
-        {`${modelText === '文档' ? '无' : '废弃'}${modelText}数量:`}
-        <span className={s.bold}>{deprecate}</span>
+        {`${modelText === '文档' ? '无' : '废弃'}${modelText}数量: `}
+        <span className={s.deprecate}>{deprecate}</span>
       </Card>
     </Col>
   );
