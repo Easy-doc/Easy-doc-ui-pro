@@ -1,6 +1,6 @@
 /* eslint-disable react/no-array-index-key */
 import React, { useEffect, useState } from 'react';
-import { Button, Form, Row, Col, Input, Modal, notification } from 'antd';
+import { Button, Form, Row, Col, Input, Modal, notification, Spin } from 'antd';
 import { getBtnColor, jsonParse, getDefault } from '@/utils/utils';
 import s from './index.less';
 import { request2, BASE_URL } from '@/utils/request';
@@ -23,8 +23,9 @@ const FormContent: React.FC<FormContentProps> = props => {
   const [form] = Form.useForm();
   const [showModal, setShowModal] = useState(false);
   const [data, setData] = useState({});
+  const [loading, setLoading] = useState(false);
 
-  const handleSubmit = async () => {
+  const handleSubmit = () => {
     const baseUrl = BASE_URL + props.path + path;
     const values = form.getFieldsValue();
     let requestBody = {};
@@ -46,18 +47,21 @@ const FormContent: React.FC<FormContentProps> = props => {
     if (type == null) {
       methodType = 'GET';
     }
-    await request2(baseUrl, {
+    setLoading(true);
+    request2(baseUrl, {
       method: methodType,
       params: requestParams,
       data: requestBody,
     })
       .then(res => {
+        setLoading(false);
         setData(res);
       })
       .catch(error => {
         const { response } = error;
         const { status, url } = response;
         notification.error({ message: `请求错误 ${status}: ${url}` });
+        setLoading(false);
         setData(error.data);
       });
     setShowModal(true);
@@ -65,20 +69,24 @@ const FormContent: React.FC<FormContentProps> = props => {
 
   const handleOk = () => {
     setShowModal(false);
+    setData('');
   };
 
   const handleCancel = () => {
     setShowModal(false);
+    setData('');
   };
 
   const renderObject = () => {
     const obj = {};
-    if (!body || !body) {
+    if (!body) {
       return JSON.stringify({ key: 'value' }, null, 2);
     }
-    body.fieldList.forEach((item: any) => {
-      obj[item.name] = getDefault(item.defaultValue, item.type);
-    });
+    if (body.fieldList) {
+      body.fieldList.forEach((item: any) => {
+        obj[item.name] = getDefault(item.defaultValue, item.type);
+      });
+    }
     return jsonParse(obj);
   };
 
@@ -102,7 +110,7 @@ const FormContent: React.FC<FormContentProps> = props => {
                 {param.required && <span className={s.red}>*required</span>}
               </p>
               <i>{param.type}</i>
-              {param.type === 'Object' && (
+              {param.type === 'Object' && body.fieldList && (
                 <ModelTable
                   field={body}
                   type={type}
@@ -113,7 +121,13 @@ const FormContent: React.FC<FormContentProps> = props => {
               )}
             </Col>
             <Col span={12}>
-              <p>{param.description}</p>
+              {param.description.includes('@link:') ? (
+                <a href={param.description.split('@link:')[1]}>
+                  {param.description.split('@link:')[0]}-点击获取详情
+                </a>
+              ) : (
+                <p>{param.description}</p>
+              )}
               {param.type === 'Object' ? (
                 <Form.Item name={param.name}>
                   <TextArea autoSize />
@@ -138,6 +152,7 @@ const FormContent: React.FC<FormContentProps> = props => {
         </Button>
       </Form.Item>
       <Modal title="结果" visible={showModal} onOk={handleOk} onCancel={handleCancel}>
+        <Spin spinning={loading} tip="接口请求中" />
         <pre className={s.bodyContent}>{jsonParse(data || {})}</pre>
       </Modal>
     </Form>

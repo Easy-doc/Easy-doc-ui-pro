@@ -40,7 +40,6 @@ const ModelTable: React.FC<ModelTableProps> = props => {
     const temp = window.location.hash;
     if (temp) {
       const tempArr = temp.split('/');
-      // console.log('ModelTable.useEffect', tempArr)
       if (temp.length >= 6) {
         setHash(tempArr[6]);
       }
@@ -51,7 +50,13 @@ const ModelTable: React.FC<ModelTableProps> = props => {
     <div>
       <a href={`${props.href}/response/${props.idx}`} id={`${props.href}/response/${props.idx}`}>
         <span className={s.name}>{name}</span>
-        <span className={s.description}>{description}</span>
+        {description.includes('@link:') ? (
+          <a className={s.aDescription} href={description.split('@link:')[1]}>
+            {description.split('@link:')[0]}-点击获取详情
+          </a>
+        ) : (
+          <span className={s.description}>{description}</span>
+        )}
       </a>
     </div>
   );
@@ -67,15 +72,17 @@ const ModelTable: React.FC<ModelTableProps> = props => {
         header={renderResPanelHeader()}
         style={{ background: getPanelColor(props.type) }}
       >
-        <Table
-          rowKey="name"
-          columns={subColumns}
-          childrenColumnName="fieldList"
-          dataSource={fieldList}
-          pagination={false}
-          size="small"
-          tableLayout="fixed"
-        />
+        {fieldList && (
+          <Table
+            rowKey="name"
+            columns={subColumns}
+            childrenColumnName="fieldList"
+            dataSource={fieldList}
+            pagination={false}
+            size="small"
+            tableLayout="fixed"
+          />
+        )}
       </Panel>
     </Collapse>
   );
