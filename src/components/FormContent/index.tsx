@@ -92,7 +92,12 @@ const FormContent: React.FC<FormContentProps> = props => {
 
   useEffect(() => {
     paramList.forEach((param: any) => {
-      const defaultValue = param.type === 'Object' ? renderObject() : param.defaultValue;
+      let defaultValue = '';
+      if (!param.defaultValue) {
+        defaultValue = param.type === 'Object' ? renderObject() : '';
+      } else {
+        defaultValue = param.defaultValue;
+      }
       form.setFieldsValue({
         [param.name]: defaultValue,
       });
@@ -110,7 +115,7 @@ const FormContent: React.FC<FormContentProps> = props => {
                 {param.required && <span className={s.red}>*required</span>}
               </p>
               <i>{param.type}</i>
-              {param.type === 'Object' && body.fieldList && (
+              {param.type === 'Object' && body && body.fieldList && (
                 <ModelTable
                   field={body}
                   type={type}
