@@ -122,6 +122,10 @@ export const getDefault = (val: any, type: any) => {
         return false;
       case 'List':
         return [];
+      case 'Timestamp':
+        return 1577808000000;
+      case 'Date':
+        return '2020-01-01 00:00:00';
       default:
         return '';
     }

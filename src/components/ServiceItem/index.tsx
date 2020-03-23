@@ -104,7 +104,11 @@ const ServiceItem: React.FC<SeviceItemProps> = props => {
       )}
       <Divider />
       <section>
-        <FormContent method={method} path={path} href={`#/controller/0/method/${methodIdx}`} />
+        <FormContent
+          method={method}
+          path={path}
+          href={`#/controller/${props.idx}/method/${methodIdx}`}
+        />
       </section>
       <section>
         {method.responseList && method.responseList.length > 0 && (
