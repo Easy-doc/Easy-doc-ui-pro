@@ -1,7 +1,8 @@
 /* eslint-disable react/no-array-index-key */
 import React, { useEffect, useState } from 'react';
-import { Button, Form, Row, Col, Input, Modal, notification, Spin } from 'antd';
+import { Button, Form, Row, Col, Input, Modal, notification, Spin, Upload } from 'antd';
 import { getBtnColor, jsonParse, getDefault } from '@/utils/utils';
+import { UploadOutlined } from '@ant-design/icons';
 import s from './index.less';
 import { request2, BASE_URL } from '@/utils/request';
 import TextArea from 'antd/lib/input/TextArea';
@@ -16,6 +17,7 @@ interface FormContentProps {
   };
   path: string;
   href: string;
+  response: any;
 }
 
 const FormContent: React.FC<FormContentProps> = props => {
@@ -24,19 +26,27 @@ const FormContent: React.FC<FormContentProps> = props => {
   const [showModal, setShowModal] = useState(false);
   const [data, setData] = useState({});
   const [loading, setLoading] = useState(false);
+  const [fileList, setFileList] = useState([]);
+  const [submitFile, setSubmitFile] = useState(null);
+  const baseUrl = BASE_URL + props.path + path;
 
   const handleSubmit = () => {
-    const baseUrl = BASE_URL + props.path + path;
     const values = form.getFieldsValue();
     let requestBody = {};
     const requestParams = {};
+    const formData = new FormData();
     Object.keys(values).forEach(item => {
       if (/^{\(.|\n\)*}$/g.test(values[item])) {
         requestBody = JSON.parse(values[item]);
       } else if (values[item] !== undefined && values[item] !== '') {
         requestParams[item] = values[item];
+        // 处理file
+        if (fileList.length > 0) {
+          formData.append(item, values[item]);
+        }
       }
     });
+
     const localStr = localStorage.getItem('easy-doc-global-params');
     if (localStr) {
       new Map<string, any>(JSON.parse(localStr)).forEach((v: any, k: string) => {
@@ -47,24 +57,48 @@ const FormContent: React.FC<FormContentProps> = props => {
     if (type == null) {
       methodType = 'GET';
     }
-    setLoading(true);
-    request2(baseUrl, {
+
+    const resFile = props.response.some(r => r.fieldList.some(f => f.name === 'File'));
+    const option = {
       method: methodType,
-      params: requestParams,
-      data: requestBody,
-    })
+    };
+    if (submitFile) {
+      formData.append('file', submitFile);
+      option.data = formData;
+    } else {
+      option.params = requestParams;
+      option.data = requestBody;
+    }
+    if (resFile) {
+      option.responseType = 'blob';
+    }
+    setLoading(true);
+    request2(baseUrl, option)
       .then(res => {
         setLoading(false);
         setData(res);
+        if (resFile && res) {
+          const pom = document.createElement('a');
+          const url = window.URL.createObjectURL(new Blob([res]));
+          pom.setAttribute('href', url);
+          pom.setAttribute('download', '下载文件.xlsx');
+          if (document.createEvent) {
+            const event = document.createEvent('MouseEvents');
+            event.initEvent('click', true, true);
+            pom.dispatchEvent(event);
+          } else {
+            pom.click();
+          }
+        }
       })
       .catch(error => {
         const { response } = error;
-        const { status, url } = response;
+        const { status, url } = response || {};
         notification.error({ message: `请求错误 ${status}: ${url}` });
         setLoading(false);
         setData(error.data);
       });
-    setShowModal(true);
+    if (!resFile) setShowModal(true);
   };
 
   const handleOk = () => {
@@ -75,6 +109,13 @@ const FormContent: React.FC<FormContentProps> = props => {
   const handleCancel = () => {
     setShowModal(false);
     setData('');
+  };
+
+  const handleFileChange = (info: any) => {
+    // 限制上传数量
+    let fList = [...info.fileList];
+    fList = fList.slice(-1);
+    setFileList(fList);
   };
 
   const renderObject = () => {
@@ -88,6 +129,35 @@ const FormContent: React.FC<FormContentProps> = props => {
       });
     }
     return jsonParse(obj);
+  };
+
+  const renderForm = (param: any) => {
+    switch (param.type) {
+      case 'Object':
+        return (
+          <Form.Item name={param.name}>
+            <TextArea autoSize />
+          </Form.Item>
+        );
+      case 'File':
+        return (
+          <Form.Item>
+            <Upload
+              beforeUpload={f => setSubmitFile(f)}
+              onChange={handleFileChange}
+              fileList={fileList}
+            >
+              <Button icon={<UploadOutlined />}>Upload</Button>
+            </Upload>
+          </Form.Item>
+        );
+      default:
+        return (
+          <Form.Item name={param.name}>
+            <Input size="large" />
+          </Form.Item>
+        );
+    }
   };
 
   useEffect(() => {
@@ -133,15 +203,7 @@ const FormContent: React.FC<FormContentProps> = props => {
               ) : (
                 <p>{param.description}</p>
               )}
-              {param.type === 'Object' ? (
-                <Form.Item name={param.name}>
-                  <TextArea autoSize />
-                </Form.Item>
-              ) : (
-                <Form.Item name={param.name}>
-                  <Input size="large" />
-                </Form.Item>
-              )}
+              {renderForm(param)}
             </Col>
           </Row>
         ))}

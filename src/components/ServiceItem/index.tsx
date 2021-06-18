@@ -108,6 +108,7 @@ const ServiceItem: React.FC<SeviceItemProps> = props => {
           method={method}
           path={path}
           href={`#/controller/${props.idx}/method/${methodIdx}`}
+          response={method.responseList}
         />
       </section>
       <section>
