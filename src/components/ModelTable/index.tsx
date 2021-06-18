@@ -47,7 +47,7 @@ const ModelTable: React.FC<ModelTableProps> = props => {
   }, []);
 
   const renderResPanelHeader = () => (
-    <div>
+    <div style={{ display: 'inline-flex' }}>
       <a href={`${props.href}/response/${props.idx}`} id={`${props.href}/response/${props.idx}`}>
         <span className={s.name}>{name}</span>
         {description.includes('@link:') ? (
