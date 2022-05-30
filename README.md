@@ -24,7 +24,7 @@ npm start
 yarn start
 ```
 
-## 构建项目
+## 打包
 
 ```bash
 npm run build

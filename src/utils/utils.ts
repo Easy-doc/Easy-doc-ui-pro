@@ -108,7 +108,7 @@ export const jsonParse = (obj: any) => {
 };
 
 export const getDefault = (val: any, type: any) => {
-  if (val === null) {
+  if (val === null || val === undefined) {
     switch (type) {
       case 'String':
         return '';
